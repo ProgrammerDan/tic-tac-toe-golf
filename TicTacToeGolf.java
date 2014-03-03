@@ -8,7 +8,7 @@ public class TicTacToeGolf {
 		System.out.print(k +((i<1)?"":"\n"));
 	}
 	/** Game board */
-	int[][] gg = new int[3][3];
+	int[][] gg;
 	/** Unused more verbose game board */
 	void G() {
 		for(int i=0;i<3;i++) {
@@ -40,8 +40,12 @@ public class TicTacToeGolf {
 		}p("",1);
 	}
 	/** Generate a random value between 0..2 */
-	int x() {
-		return (new Random()).nextInt(3);
+	int x(){
+		return X(3);
+	}
+	/** Generate a random value */
+	int X(int i) {
+		return (new Random()).nextInt(i);
 	}
 	/** Convert 1 to X, 2 to O */
 	String w(int i) {
@@ -52,13 +56,49 @@ public class TicTacToeGolf {
 		return (new Scanner(System.in)).nextInt();
 	}
 	/** Pick the next move for the computer */
-	void z() {
+	void Z() {
 		int i,j;
 		do{
 			i=x();
 			j=x();
 		}while(!s(i,j,1));
 		p(i+"x"+j,1);
+	}
+	/** Check for win condition for player z based on an ordered set of values a,b,c */
+	int o(int a, int b, int c, int z) {
+		return (a==b&&c==0&&a==z)?2:(a==0&&b==c&&b==z)?0:(a==c&&b==0&&c==z)?1:-1;
+	}
+	/** Check for win over rows, cols, and grids for user z, place for user y based on findings.
+	 *  Means will block z if z != y */
+	int q(int z,int y){
+		int i=0,j;
+		// check for win or block
+		for (;i<3;i++){
+			j=o(gg[i][0],gg[i][1],gg[i][2],z);
+			p(i+"-"+j,1);
+			if (j>=0){s(i,j,y);return 1;}
+			j=o(gg[0][i],gg[1][i],gg[2][i],z);
+			p(i+"|"+j,1);
+			if (j>=0){s(j,i,y);return 1;}
+		}
+		i=o(gg[0][0],gg[1][1],gg[2][2],z);
+		p(" \\"+i,1);
+		if (i>=0){s(i,i,y);return 1;}
+		i=o(gg[0][2],gg[1][1],gg[2][0],z);
+		p(" /"+i,1);
+		if (i>=0){s(i,2-i,y);return 1;}
+		return 0;
+	}
+	/** Pick the next move for the computer, smartly */
+	void z() {
+		// Check for win
+		if (q(1,1)>0)return;
+		// Check for block
+		if (q(2,1)>0)return;
+		// check for best
+		if (s(1,1,1))return; // try to take center.
+		// take whatever would win next turn if the other person is stupid.
+		Z(); // take anything.
 	}
 	/** Check if move is possible, if so do it, otherwise return false */
 	boolean s(int i, int j, int z){
@@ -68,23 +108,30 @@ public class TicTacToeGolf {
 	}
 	/** Play the game, Computer gets first  move. */
 	void start() {
-		gg[x()][x()]=1;
-		g();
-		int moves=8,x;
-		do{
+		while(true){
+			gg = new int[3][3];
+			int moves=9,x;
+			if (X(2)<1) { // Computer starts.
+				Z();//gg[x()][x()]=1;
+				g();
+				moves--;
+			}
 			do{
-				p("x?",0);
-				x=y();
-				p("y?",0);
-			}while(!s(y(),x,2));
-			g();
-			if (c()>0)
-				break;
-			z();
-			g();
-			moves-=2;
-		}while(moves>0&&c()==0);
-		if(c()<1) p("No winner!",1);
-		else p(w(c()) + " wins!",1);
+				do{
+					p("x?",0);
+					x=y();
+					p("y?",0);
+				}while(!s(y(),x,2));
+				moves--;
+				g();
+				if (c()>0||moves==0)
+					break;
+				z();
+				g();
+				moves--;
+			}while(moves>0&&c()==0);
+			if(c()<1) p("No winner!",1);
+			else p(w(c()) + " wins!",1);
+		}
 	}
 }
