@@ -8,7 +8,7 @@ public class TicTacToeGolf {
 		System.out.print(k +((i<1)?"":"\n"));
 	}
 	/** Game board */
-	int[][] gg;
+	int[][] gg;int P;
 	/** Unused more verbose game board */
 	void G() {
 		for(int i=0;i<3;i++) {
@@ -49,7 +49,7 @@ public class TicTacToeGolf {
 	}
 	/** Convert 1 to X, 2 to O */
 	String w(int i) {
-		return (i<1)?".":(i<2)?"X":"O";
+		return (i<1)?".":(i*P<2*P)?"X":"O";
 	}
 	/** Get a number from the input */
 	int y() {
@@ -64,9 +64,9 @@ public class TicTacToeGolf {
 		}while(!s(i,j,1));
 		p(i+"x"+j,1);
 	}
-	/** Check for win condition for player z based on an ordered set of values a,b,c */
-	int o(int a, int b, int c, int z) {
-		return (a==b&&c==0&&a==z)?2:(a==0&&b==c&&b==z)?0:(a==c&&b==0&&c==z)?1:-1;
+	/** Check for win or board condition for player z based on an ordered set of values a,b,c having one space with player x */
+	int o(int a, int b, int c, int z, int x) {
+		return (a==b&&c==x&&a==z)?2:(a==x&&b==c&&b==z)?0:(a==c&&b==x&&c==z)?1:-1;
 	}
 	/** Check for win over rows, cols, and grids for user z, place for user y based on findings.
 	 *  Means will block z if z != y */
@@ -74,19 +74,40 @@ public class TicTacToeGolf {
 		int i=0,j;
 		// check for win or block
 		for (;i<3;i++){
-			j=o(gg[i][0],gg[i][1],gg[i][2],z);
+			j=o(gg[i][0],gg[i][1],gg[i][2],z,0);
 			p(i+"-"+j,1);
 			if (j>=0){s(i,j,y);return 1;}
-			j=o(gg[0][i],gg[1][i],gg[2][i],z);
+			j=o(gg[0][i],gg[1][i],gg[2][i],z,0);
 			p(i+"|"+j,1);
 			if (j>=0){s(j,i,y);return 1;}
 		}
-		i=o(gg[0][0],gg[1][1],gg[2][2],z);
+		i=o(gg[0][0],gg[1][1],gg[2][2],z,0);
 		p(" \\"+i,1);
 		if (i>=0){s(i,i,y);return 1;}
-		i=o(gg[0][2],gg[1][1],gg[2][0],z);
+		i=o(gg[0][2],gg[1][1],gg[2][0],z,0);
 		p(" /"+i,1);
 		if (i>=0){s(i,2-i,y);return 1;}
+		return 0;
+	}
+	/** Check for placement options over rows, cols, and grids for user z, place for user y based on findings.
+	 *  Means will block z if z != y */
+	int b(int z,int y){
+		int i=0,j;
+		// check for placement or block
+		for (;i<3;i++){
+			j=o(gg[i][0],gg[i][1],gg[i][2],0,z);
+			p(i+"-"+j,1);
+			if (j>=0){s(i,2-j/2,y);return 1;}
+			j=o(gg[0][i],gg[1][i],gg[2][i],0,z);
+			p(i+"|"+j,1);
+			if (j>=0){s(2-j/2,i,y);return 1;}
+		}
+		i=o(gg[0][0],gg[1][1],gg[2][2],0,z);
+		p(" \\"+i,1);
+		if (i>=0){s(2-i/2,2-i/2,y);return 1;}
+		i=o(gg[0][2],gg[1][1],gg[2][0],0,z);
+		p(" /"+i,1);
+		if (i>=0){s(2-i/2,i/2,y);return 1;}
 		return 0;
 	}
 	/** Pick the next move for the computer, smartly */
@@ -97,7 +118,8 @@ public class TicTacToeGolf {
 		if (q(2,1)>0)return;
 		// check for best
 		if (s(1,1,1))return; // try to take center.
-		// take whatever would win next turn if the other person is stupid.
+		// take whatever would win the subsequent turn if the other person is stupid.
+		if (b(1,1)>0)return;
 		Z(); // take anything.
 	}
 	/** Check if move is possible, if so do it, otherwise return false */
@@ -112,10 +134,11 @@ public class TicTacToeGolf {
 			gg = new int[3][3];
 			int moves=9,x;
 			if (X(2)<1) { // Computer starts.
+				P=1;
 				Z();//gg[x()][x()]=1;
 				g();
 				moves--;
-			}
+			}else P=-1;
 			do{
 				do{
 					p("x?",0);
