@@ -49,7 +49,7 @@ public class TicTacToeGolf {
 	}
 	/** Convert 1 to X, 2 to O */
 	String w(int i) {
-		return (i<1)?".":(i*P<2*P)?"X":"O";
+		return (i<1)?".":((2*i-3)*P<0)?"X":"O";
 	}
 	/** Get a number from the input */
 	int y() {
@@ -62,7 +62,7 @@ public class TicTacToeGolf {
 			i=x();
 			j=x();
 		}while(!s(i,j,1));
-		p(i+"x"+j,1);
+		//p(i+"x"+j,1);
 	}
 	/** Check for win or board condition for player z based on an ordered set of values a,b,c having one space with player x */
 	int o(int a, int b, int c, int z, int x) {
@@ -75,17 +75,17 @@ public class TicTacToeGolf {
 		// check for win or block
 		for (;i<3;i++){
 			j=o(gg[i][0],gg[i][1],gg[i][2],z,0);
-			p(i+"-"+j,1);
+			//p(i+"-"+j,1);
 			if (j>=0){s(i,j,y);return 1;}
 			j=o(gg[0][i],gg[1][i],gg[2][i],z,0);
-			p(i+"|"+j,1);
+			//p(i+"|"+j,1);
 			if (j>=0){s(j,i,y);return 1;}
 		}
 		i=o(gg[0][0],gg[1][1],gg[2][2],z,0);
-		p(" \\"+i,1);
+		//p(" \\"+i,1);
 		if (i>=0){s(i,i,y);return 1;}
 		i=o(gg[0][2],gg[1][1],gg[2][0],z,0);
-		p(" /"+i,1);
+		//p(" /"+i,1);
 		if (i>=0){s(i,2-i,y);return 1;}
 		return 0;
 	}
@@ -96,17 +96,17 @@ public class TicTacToeGolf {
 		// check for placement or block
 		for (;i<3;i++){
 			j=o(gg[i][0],gg[i][1],gg[i][2],0,z);
-			p(i+"-"+j,1);
+			//p(i+"-"+j,1);
 			if (j>=0){s(i,2-j/2,y);return 1;}
 			j=o(gg[0][i],gg[1][i],gg[2][i],0,z);
-			p(i+"|"+j,1);
+			//p(i+"|"+j,1);
 			if (j>=0){s(2-j/2,i,y);return 1;}
 		}
 		i=o(gg[0][0],gg[1][1],gg[2][2],0,z);
-		p(" \\"+i,1);
+		//p(" \\"+i,1);
 		if (i>=0){s(2-i/2,2-i/2,y);return 1;}
 		i=o(gg[0][2],gg[1][1],gg[2][0],0,z);
-		p(" /"+i,1);
+		//p(" /"+i,1);
 		if (i>=0){s(2-i/2,i/2,y);return 1;}
 		return 0;
 	}
@@ -124,8 +124,10 @@ public class TicTacToeGolf {
 	}
 	/** Check if move is possible, if so do it, otherwise return false */
 	boolean s(int i, int j, int z){
-		if (gg[i][j]<1)
+		if (gg[i][j]<1){
+			p(w(z)+" to "+j+","+i,1);
 			return (gg[i][j]=z)==z;
+		}
 		return 0>1;
 	}
 	/** Play the game, Computer gets first  move. */
