@@ -1,36 +1,13 @@
 import java.util.*;
 class T{
-	public static void main(String[]a){
-		(new T()).t();
-	}
-	
-	/** Wrap System.out.print to avoid all that typing */
-	void p(String k, int i){
-		System.out.print(k +((i<1)?"":"\n"));
-	}
-	
-	/** Game board */
-	int[][] G;int P;
-
-	/** Check all possibilities for winner, return 0 for no winner, 1 for X, 2 for O */
-	int c(){
-		for(int[]i:G)
-			if((i[0]==i[1])&&(i[1]==i[2])&&i[0]>0)
-				return i[0];
-		for(int i=0;i<3;i++)
-			if ((G[0][i]==G[1][i])&&(G[1][i]==G[2][i])&&G[0][i]>0)
-				return G[0][i];
-		int m=G[1][1];
-		return (((G[0][0]==m)&&(m==G[2][2])||(G[0][2]==m)&&(m==G[2][0]))?m:0);
-	}
+public static void main(String[]a){(new T()).t();}
+void p(String k,int i){System.out.print(k+(i<1?"":"\n"));}
+int[][]G;int P;
+/** Check all possibilities for winner, return 0 for no winner, 1 for X, 2 for O */
+int c(){int m,a,b,i;for(a=b=i=0;i<3;i++){a=G[i][0];b=G[0][i];m=((a==G[i][1])&&(G[i][1]==G[i][2])&&a>0)?a:((b==G[1][i])&&(G[1][i]==G[2][i])&&b>0)?b:0;if(m>0){return m;}}m=G[1][1];return(((G[0][0]==m)&&(m==G[2][2])||(b==m)&&(m==a))?m:0);}
+//int c(){for(int[]i:G)if((i[0]==i[1])&&(i[1]==i[2])&&i[0]>0)return i[0];for(int i=0;i<3;i++)if((G[0][i]==G[1][i])&&(G[1][i]==G[2][i])&&G[0][i]>0)return G[0][i];int m=G[1][1];return(((G[0][0]==m)&&(m==G[2][2])||(G[0][2]==m)&&(m==G[2][0]))?m:0);}
 	/** Print game board */
-	void g(){
-		for(int[]i:G){
-			for(int j:i)
-				p(w(j),0);
-			p("",1);
-		}p("",1);
-	}
+void g(){for(int[]i:G){for(int j:i)p(w(j),0);p("",1);}p("",1);}
 	/** Generate a random value */
 	int x(int i) {
 		return (new Random()).nextInt(i);
