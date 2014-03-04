@@ -15,6 +15,11 @@ Building equivalent golfed version (at time of writing, 1801 characters):
     javac T.java
     java T
 
+Building optimized golfed version (at time of writing, 1690 characters):
+
+    javac W.java
+    java W
+
 **Some usage notes:**
 
 * 50/50 chance for who takes first turn. 
