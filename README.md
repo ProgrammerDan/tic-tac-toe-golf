@@ -5,19 +5,29 @@ Solution to [Noughts and Crosses (aka Tic-Tac-Toe)](http://codegolf.stackexchang
 
 Trying to see how minimally I can make a playable Tic-Tac-Toe. In Java for now.
 
-Usage notes on un-fully golfed version:
+Building un-golfed version:
 
     javac TicTacToeGolf.java
-	java TicTacToeGolf
+    java TicTacToeGolf
 
-Computer plays first, choosing a random placement.
+Building equivalent golfed version (at time of writing, 1801 characters):
 
-User is prompted next. Enter values between 0 and 2. First pick the row (x), then the column (y).
+    javac T.java
+    java T
 
-If User wins, outcome is immediate.
+**Some usage notes:**
 
-Computer will then choose a placement.
+* 50/50 chance for who takes first turn. 
+* Move of "X" or "O" announced before displaying the game board. 
+* Choice of cell is specified as column, then row, indexed from 0. 
+* Entering something outside `[0,2]` will cause a index exception and end the game.
+* If computer goes first, takes a random move (no preference for any board location).
+* Computer will take one move wins, block one move losses, plays conservatively (prefers center if available), tries to set up a two-turn win (hope other player doesn't block), and if that fails? Picks a random spot. So doesn't play a perfect game, but plays a great game. I can force a win due to the random start possibilities, but computer will force a win as well if I start badly. 
+* Wins are detected immediately. 
+* Impossible-to-win is *not* detected; you must play every game to the end or let the other player win. 
+* At the end of each game, a new game begins, again with a randomly chosen starting player.
+* Use `Ctrl+c` to end.
 
-If Computer wins, outcome is immediate.
+There's definitely room for improvement. One place is likely replacing the multi-dimensional array with a one-dimensional array, and replacing the more complex decision logic with either a reduced form of the same, or a more concise best-choice solver.
 
-If out of moves (no spaces) and no winner, game ends.
+Play around with it and let me know what you think. Feel free to fork, or recommend improvements via pull requests.
